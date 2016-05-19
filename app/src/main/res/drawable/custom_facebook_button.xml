@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <inset android:insetLeft="0dp" android:insetRight="0dp">
+            <shape>
+                <solid android:color="@color/facebook_color" />
+                <stroke android:width="@dimen/_2sdp" android:color="@color/white" />
+                <corners android:bottomLeftRadius="@dimen/_5sdp" android:bottomRightRadius="@dimen/_5sdp" android:topLeftRadius="@dimen/_5sdp" android:topRightRadius="@dimen/_5sdp" />
+            </shape>
+        </inset>
+    </item>
+
+    <item>
+        <inset android:insetLeft="0dp" android:insetRight="0dp">
+            <shape>
+                <solid android:color="@color/facebook_color_transparent" />
+                <stroke android:width="@dimen/_2sdp" android:color="@color/white" />
+                <corners android:bottomLeftRadius="@dimen/_5sdp" android:bottomRightRadius="@dimen/_5sdp" android:topLeftRadius="@dimen/_5sdp" android:topRightRadius="@dimen/_5sdp" />
+            </shape>
+        </inset>
+    </item>
+</selector>
