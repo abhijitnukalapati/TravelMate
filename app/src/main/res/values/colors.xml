@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6cd790</color>
+    <color name="colorPrimaryDark">#5dbc7d</color>
+    <color name="colorAccent">#6cd790</color>
+    <color name="transparent_white">#A6ffffff</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#e1dede</color>
+    <color name="facebook_color">#415dae</color>
+    <color name="facebook_color_transparent">#66415dae</color>
+    <color name="grenn_transparent">#666cd790</color>
+    <color name="black_transparent">#40000000</color>
+    <color name="light_green">#d0f3dc</color>
+</resources>
