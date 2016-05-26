@@ -6,8 +6,14 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gill.travelmate.SplashActivity"
-    tools:showIn="@layout/activity_splash"
-    android:background="@drawable/splash_bg">
+    tools:showIn="@layout/activity_splash">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/splash_bg"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/background_image_for_description"/>
 
     <ImageView
         android:id="@+id/logo"
@@ -15,7 +21,8 @@
         android:layout_height="@dimen/_150sdp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo"
+        android:contentDescription="@string/logo_of_the_app"/>
 
     <TextView
         android:id="@+id/title"
