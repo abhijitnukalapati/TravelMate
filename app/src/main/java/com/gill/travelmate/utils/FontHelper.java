@@ -13,6 +13,8 @@ import android.widget.TextView;
  * 
  * @author Alexander Naberezhnov
  */
+
+//Applay font on views
 public class FontHelper {
 	// -----------------------------------------------------------------------
 	//

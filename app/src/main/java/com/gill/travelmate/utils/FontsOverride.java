@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 /**
  * Created by Dawinder on 12/05/2016.
  */
+
+//Override navigation font
 public class FontsOverride {
     public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
         final Typeface regular = Typeface.createFromAsset(context.getAssets(),fontAssetName);
