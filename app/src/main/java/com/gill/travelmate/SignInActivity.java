@@ -30,6 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//Signin activity
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener{
 
     ImageView cross;
@@ -106,6 +107,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         overridePendingTransition(R.anim.toright_in, R.anim.toright_out);
     }
 
+    //initialize views
     public void initialize_views(){
         cross=(ImageView)findViewById(R.id.cross);
         et_email=(EditText)findViewById(R.id.et_email);
@@ -117,6 +119,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         title.setDrawingCacheEnabled(true);
     }
 
+    //set on click on views
     public void set_listener(){
         cross.setOnClickListener(this);
         tv_signin.setOnClickListener(this);
@@ -128,6 +131,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         title.startAnimation(animationFadeIn);
     }
 
+    //set functionality on click of views
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -150,6 +154,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //check validation of fields
     public boolean check_validation(){
         if(!(et_email.getText().toString().matches(GeneralValues.EMAIL_PATTERN))||et_email.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_valid_email));
@@ -162,6 +167,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //api to check that user enter correct info or not
     public void api_user_signin(){
         try{
             dialog.show();
@@ -195,6 +201,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         i=new Intent(mContext,SelectDestinationActivity.class);
                         i.putExtra("uid",""+data.getString("id"));
                         i.putExtra("uname",""+data.getString("username"));
+                        i.putExtra("email",""+et_email.getText().toString());
                         startActivity(i);
                         SignInActivity.this.finish();
                         overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);

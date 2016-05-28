@@ -18,7 +18,7 @@ import com.gill.travelmate.utils.FontHelper;
 import com.gill.travelmate.utils.GeneralValues;
 import com.gill.travelmate.utils.TinyDB;
 
-
+//First screen when app starts
 public class SplashActivity extends AppCompatActivity {
 
     ImageView logo;
@@ -44,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
         logo=(ImageView)findViewById(R.id.logo);
         title=(TextView)findViewById(R.id.title);
 
+        //animation on logo
         logo.setDrawingCacheEnabled(true);
         Animation anim_zoom = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
         AnimationSet growShrink = new AnimationSet(true);
@@ -71,8 +72,24 @@ public class SplashActivity extends AppCompatActivity {
 
             }
         });
+
+        /*try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.gill.travelmate",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }*/
     }
 
+    //stay 1500 milliseconds here before goto next screen
     public void start_timer(){
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -87,34 +104,4 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 1500);
     }
-
-/*    public void call_api(){
-        YelpAPIFactory apiFactory = new YelpAPIFactory("xVGAIFUbD2r9kjgHCUM7ww", "EVjGuFiMaHIEeu5Ln94frqgCnkQ", "_lg0YkcnO7DZQ6oju2jV-21p-WUFgmYo", "OdMtiyxepMY7V13beRcRfGYN6xQ");
-        YelpAPI yelpAPI = apiFactory.createAPI();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("term", "food");
-        params.put("limit", "3");
-        params.put("lang", "fr");
-
-        Call<SearchResponse> call = yelpAPI.search("San Francisco", params);
-
-        Utils.show_log("url = "+call.request().url());
-
-        Callback<SearchResponse> callback = new Callback<SearchResponse>() {
-            @Override
-            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                SearchResponse searchResponse = response.body();
-                // Update UI text with the searchResponse.
-                Utils.show_log("in result "+searchResponse);
-            }
-            @Override
-            public void onFailure(Call<SearchResponse> call, Throwable t) {
-                // HTTP error happened, do something to handle it.
-                Utils.show_log("in exp = "+t.getMessage().toString());
-            }
-        };
-
-        call.enqueue(callback);
-    }*/
 }

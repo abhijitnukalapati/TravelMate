@@ -38,6 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//Screen after splash screen
 public class SigningActivity extends AppCompatActivity implements View.OnClickListener{
 
     LinearLayout ll_fb_signin;
@@ -68,11 +69,13 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
         tinyDB=new TinyDB(mContext);
         dialog=Utils.get_progressDialog(mContext);
 
+        //callback for facebook login
         callbackManager = CallbackManager.Factory.create();
 
         initialize_views();
         set_listener();
 
+        //facebook login button settings
         login_button.setReadPermissions(Arrays.asList("email", "public_profile", "user_friends"));
         login_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -85,7 +88,11 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
                             femail = object.optString("email");
                             fid = object.optString("id");
                             fname = object.optString("name");
+                            if(femail==null){
+                                femail="";
+                            }
 
+                            //call api to save fb login data on server
                             api_facebook_login();
                         } else {
                             Utils.showToast(getApplicationContext(),getString(R.string.can_not_login));
@@ -111,6 +118,7 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    //initialize views
     public void initialize_views(){
         login_button = (LoginButton) findViewById(R.id.login_button);
 
@@ -123,6 +131,7 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
         title.setDrawingCacheEnabled(true);
     }
 
+    //set listener on views
     public void set_listener(){
         ll_fb_signin.setOnClickListener(this);
         tv_signin.setOnClickListener(this);
@@ -136,12 +145,14 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
         LoginManager.getInstance().logOut();
     }
 
+    //after FB login it returns into this function
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    //set functionality on click of views
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -165,6 +176,7 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    //api to save Fb login data on server
     public void api_facebook_login(){
         try{
             dialog.show();
@@ -199,6 +211,7 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
                         i=new Intent(mContext,SelectDestinationActivity.class);
                         i.putExtra("uid",""+data.getString("id"));
                         i.putExtra("uname",""+data.getString("username"));
+                        i.putExtra("email",""+femail);
                         startActivity(i);
                         overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);
                     }else{

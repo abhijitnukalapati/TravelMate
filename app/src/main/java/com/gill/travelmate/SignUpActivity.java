@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.gill.travelmate.utils.FontHelper;
@@ -30,6 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//SignUp activity
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
     ImageView cross;
@@ -38,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     Animation animationFadeIn;
     Context mContext;
     Dialog dialog;
+    ScrollView scrollview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +128,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         overridePendingTransition(R.anim.toright_in, R.anim.toright_out);
     }
 
+    //initialize views
     public void initialize_views(){
         cross=(ImageView)findViewById(R.id.cross);
         et_name=(EditText)findViewById(R.id.et_name);
@@ -132,11 +136,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         et_password=(EditText)findViewById(R.id.et_password);
         tv_signup=(TextView)findViewById(R.id.tv_signup);
         title=(TextView)findViewById(R.id.title);
+        scrollview=(ScrollView)findViewById(R.id.scrollview);
 
         animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         title.setDrawingCacheEnabled(true);
     }
 
+    //set listener on views
     public void set_listener(){
         cross.setOnClickListener(this);
         tv_signup.setOnClickListener(this);
@@ -148,6 +154,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         title.startAnimation(animationFadeIn);
     }
 
+    //set functionality on views click
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -170,6 +177,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //validate all the fields
     public boolean check_validation(){
         if(et_name.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_your_name));
@@ -185,6 +193,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //api to signup user
     public void api_user_signup(){
         try{
             dialog.show();
