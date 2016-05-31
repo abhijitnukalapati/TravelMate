@@ -24,15 +24,5 @@ Replace these empty strings in the mentioned class with your keys:
 * public static String WEATHERMAP_KEY="";
 
 ##Screens
-![screen](../master/art/destination.png)
-
-![screen](../master/art/hotel.png)
-
-![screen](../master/art/details.png)
-
-![screen](../master/art/weather.png)
-
-![screen](../master/art/filters.png)
-
- 
- 
+![screen](../master/art/destination.png)![screen](../master/art/hotel.png)![screen](../master/art/details.png)
+![screen](../master/art/weather.png)![screen](../master/art/filters.png)
