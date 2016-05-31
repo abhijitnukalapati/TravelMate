@@ -12,4 +12,6 @@
     <color name="grenn_transparent">#666cd790</color>
     <color name="black_transparent">#40000000</color>
     <color name="light_green">#d0f3dc</color>
+    <color name="black_transparent_dark">#40000000</color>
+    <color name="light_white">#a9a9a9</color>
 </resources>

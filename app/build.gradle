@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'TravelMateKey'
+            keyPassword '09c6ts545h'
+            storeFile file('C:/Users/Praneeth/Desktop/android pics/appkey/travelMate.jks')
+            storePassword '09c6ts545h'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-
     defaultConfig {
         applicationId "com.gill.travelmate"
         minSdkVersion 15
@@ -12,30 +19,37 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
-    repositories {
-        mavenCentral()
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    allprojects {
+        repositories {
+            mavenCentral()
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.intuit.sdp:sdp-android:1.0.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
     compile 'com.google.code.gson:gson:2.5'
-    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
     compile 'com.yelp.clientlib:yelp-android:2.0.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.+'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.12.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.google.android.gms:play-services:9.0.0'
 }
