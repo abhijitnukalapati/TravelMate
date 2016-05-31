@@ -8,3 +8,14 @@ List the main features of your app. For example:
 * Explore restaurants by food type, price range and rating.
 * Discover things to do in any destinaton.
 * Check weather forecast for particular day.
+
+##To run the app:
+Get API keys for Yelp and Openweathermap. Insert these keys in GeneralValues.java class which you can find in com.gill.travelmate.utils package.
+
+Replace these empty strings in the mentioned class with your keys:
+
+* public static String YELP_CUSTOMER_KEY="";
+* public static String YELP_CUSTOMER_SECRET="";
+* public static String YELP_TOKEN="";
+* public static String YELP_TOKEN_SECRET="";
+* public static String WEATHERMAP_KEY="";
