@@ -5,9 +5,7 @@ import android.graphics.Typeface;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by Dawinder on 12/05/2016.
- */
+
 
 //Override navigation font
 public class FontsOverride {
