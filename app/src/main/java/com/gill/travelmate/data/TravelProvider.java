@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 
 import com.gill.travelmate.data.TravelContract.HotelEntry;
 import com.gill.travelmate.data.TravelContract.LocationEntry;
+import com.gill.travelmate.data.TravelContract.WeatherEntry;
 import com.gill.travelmate.data.TravelContract.PlacesNearByEntry;
 import com.gill.travelmate.data.TravelContract.RestaurantEntry;
 
@@ -32,9 +33,13 @@ public class TravelProvider extends ContentProvider {
     //static final int RESTAURANRT_WITH_LOCATON_AND_ID = 202;
     static final int PLACESNEARBY = 400;
     static final int PLACESNEARBY_WITH_LOCATON = 401;
+    static final int WEATHER = 500;
+    static final int WEATHER_WITH_LOCATION = 501;
+    static final int WEATHER_WITH_LOCATION_AND_DATE = 502;
     //static final int PLACESNEARBY_WITH_LOCATON_AND_ID = 202;
 
     private static final SQLiteQueryBuilder sHotelByLocationQueryBuilder;
+    private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
     private static final SQLiteQueryBuilder sRestaurantByLocationQueryBuilder;
     private static final SQLiteQueryBuilder sPlacesNearByLocationQueryBuilder;
 
@@ -42,6 +47,17 @@ public class TravelProvider extends ContentProvider {
         sHotelByLocationQueryBuilder = new SQLiteQueryBuilder();
         sRestaurantByLocationQueryBuilder = new SQLiteQueryBuilder();
         sPlacesNearByLocationQueryBuilder = new SQLiteQueryBuilder();
+        sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //weather INNER JOIN location ON weather.location_id = location._id
+        sWeatherByLocationSettingQueryBuilder.setTables(
+                WeatherEntry.TABLE_NAME + " INNER JOIN " +
+                        LocationEntry.TABLE_NAME +
+                        " ON " + WeatherEntry.TABLE_NAME +
+                        "." + WeatherEntry.COLUMN_LOC_KEY +
+                        " = " + LocationEntry.TABLE_NAME +
+                        "." + LocationEntry._ID);
 
         sHotelByLocationQueryBuilder.setTables(
                 LocationEntry.TABLE_NAME + "INNER JOIN" +
@@ -71,6 +87,57 @@ public class TravelProvider extends ContentProvider {
     private static final String sLocationSelection =
             LocationEntry.TABLE_NAME + "." +
                     LocationEntry.COLUMN_LOCATION_SETTING + "=?";
+
+    private static final String sLocationSettingWithStartDateSelection =
+            LocationEntry.TABLE_NAME+
+                    "." + LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+                    WeatherEntry.COLUMN_DATE + " >= ? ";
+
+    //location.location_setting = ? AND date = ?
+    private static final String sLocationSettingAndDaySelection =
+            LocationEntry.TABLE_NAME +
+                    "." + LocationEntry.COLUMN_LOCATION_SETTING + " = ? AND " +
+                   WeatherEntry.COLUMN_DATE + " = ? ";
+
+    private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
+        String locationSetting = WeatherEntry.getLocationSettingFromUri(uri);
+        long startDate = WeatherEntry.getStartDateFromUri(uri);
+
+        String[] selectionArgs;
+        String selection;
+
+        if (startDate == 0) {
+            selection = sLocationSelection;
+            selectionArgs = new String[]{locationSetting};
+        } else {
+            selectionArgs = new String[]{locationSetting, Long.toString(startDate)};
+            selection = sLocationSettingWithStartDateSelection;
+        }
+
+        return sWeatherByLocationSettingQueryBuilder.query(mTravelDbHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    private Cursor getWeatherByLocationSettingAndDate(
+            Uri uri, String[] projection, String sortOrder) {
+        String locationSetting = WeatherEntry.getLocationSettingFromUri(uri);
+        long date = WeatherEntry.getDateFromUri(uri);
+
+        return sWeatherByLocationSettingQueryBuilder.query(mTravelDbHelper.getReadableDatabase(),
+                projection,
+                sLocationSettingAndDaySelection,
+                new String[]{locationSetting, Long.toString(date)},
+                null,
+                null,
+                sortOrder
+        );
+    }
 
     private Cursor getHotelByLocation(
             Uri uri, String[] projection, String sortOrder) {
@@ -140,6 +207,9 @@ public class TravelProvider extends ContentProvider {
         sUriMatcher.addURI(authority, TravelContract.PATH_HOTEL, HOTEL);
         sUriMatcher.addURI(authority, TravelContract.PATH_PLACESNEARBY, PLACESNEARBY);
         sUriMatcher.addURI(authority, TravelContract.PATH_RESTAURANT, RESTAURANT);
+        sUriMatcher.addURI(authority, TravelContract.PATH_WEATHER, WEATHER);
+        sUriMatcher.addURI(authority, TravelContract.PATH_WEATHER + "/*", WEATHER_WITH_LOCATION);
+        sUriMatcher.addURI(authority, TravelContract.PATH_WEATHER + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
         sUriMatcher.addURI(authority, TravelContract.PATH_HOTEL + "/*", HOTEL_WITH_LOCATON);
         sUriMatcher.addURI(authority, TravelContract.PATH_RESTAURANT + "/*", RESTAURANT_WITH_LOCATON);
         sUriMatcher.addURI(authority, TravelContract.PATH_PLACESNEARBY + "/*", PLACESNEARBY_WITH_LOCATON);
@@ -166,6 +236,12 @@ public class TravelProvider extends ContentProvider {
                 return HotelEntry.CONTENT_TYPE;
             case RESTAURANT:
                 return RestaurantEntry.CONTENT_TYPE;
+            case WEATHER_WITH_LOCATION_AND_DATE:
+                return WeatherEntry.CONTENT_ITEM_TYPE;
+            case WEATHER_WITH_LOCATION:
+                return WeatherEntry.CONTENT_TYPE;
+            case WEATHER:
+                return WeatherEntry.CONTENT_TYPE;
             case RESTAURANT_WITH_LOCATON:
                 return RestaurantEntry.CONTENT_TYPE;
             case PLACESNEARBY:
@@ -227,6 +303,29 @@ public class TravelProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case WEATHER_WITH_LOCATION_AND_DATE:
+            {
+                retCursor = getWeatherByLocationSettingAndDate(uri, projection, sortOrder);
+                break;
+            }
+            // "weather/*"
+            case WEATHER_WITH_LOCATION: {
+                retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
+                break;
+            }
+            // "weather"
+            case WEATHER: {
+                retCursor = mTravelDbHelper.getReadableDatabase().query(
+                        WeatherEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
             case HOTEL_WITH_LOCATON:
                 retCursor = getHotelByLocation(uri, projection, sortOrder);
                 break;
@@ -243,7 +342,13 @@ public class TravelProvider extends ContentProvider {
         return retCursor;
     }
 
-
+    private void normalizeDate(ContentValues values) {
+        // normalize the date value
+        if (values.containsKey(WeatherEntry.COLUMN_DATE)) {
+            long dateValue = values.getAsLong(WeatherEntry.COLUMN_DATE);
+            values.put(WeatherEntry.COLUMN_DATE, TravelContract.normalizeDate(dateValue));
+        }
+    }
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
@@ -259,6 +364,15 @@ public class TravelProvider extends ContentProvider {
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
+                break;
+            }
+            case WEATHER: {
+                normalizeDate(values);
+                long _id = db.insert(WeatherEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = WeatherEntry.buildWeatherUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case HOTEL: {
@@ -306,6 +420,10 @@ public class TravelProvider extends ContentProvider {
             case LOCATION:
                 rowsDeleted = db.delete(LocationEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case WEATHER:
+                rowsDeleted = db.delete(
+                        WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case HOTEL:
                 rowsDeleted = db.delete(HotelEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -335,6 +453,10 @@ public class TravelProvider extends ContentProvider {
             case LOCATION:
                 rowsUpdated = db.delete(LocationEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case WEATHER:
+                normalizeDate(values);
+                rowsUpdated = db.update(WeatherEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
             case HOTEL:
                 rowsUpdated = db.delete(HotelEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -360,9 +482,26 @@ public class TravelProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            case HOTEL:
+            case WEATHER:
                 db.beginTransaction();
                 int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        normalizeDate(value);
+                        long _id = db.insert(WeatherEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case HOTEL:
+                db.beginTransaction();
+                returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(HotelEntry.TABLE_NAME, null, value);

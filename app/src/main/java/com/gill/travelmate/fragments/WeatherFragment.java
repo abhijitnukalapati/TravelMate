@@ -2,9 +2,14 @@ package com.gill.travelmate.fragments;
 
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +29,7 @@ import com.gill.travelmate.HomeActivity;
 import com.gill.travelmate.R;
 import com.gill.travelmate.adapter.WeatherAdapter;
 import com.gill.travelmate.arraylists.WeatherArraylist;
+import com.gill.travelmate.data.TravelContract;
 import com.gill.travelmate.utils.FontHelper;
 import com.gill.travelmate.utils.GeneralValues;
 import com.gill.travelmate.utils.TinyDB;
@@ -44,7 +50,7 @@ import retrofit2.Response;
  */
 
 //Weather main fragment
-public class WeatherFragment extends Fragment {
+public class WeatherFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     Context mContext;
     TinyDB tinyDB;
@@ -55,6 +61,39 @@ public class WeatherFragment extends Fragment {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     WeatherAdapter adapter;
+
+    private static final int FORECAST_LOADER = 0;
+    // For the forecast view we're showing only a small subset of the stored data.
+    // Specify the columns we need.
+    private static final String[] FORECAST_COLUMNS = {
+            // In this case the id needs to be fully qualified with a table name, since
+            // the content provider joins the location & weather tables in the background
+            // (both have an _id column)
+            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // using the location set by the user, which is only in the Location table.
+            // So the convenience is worth it.
+            TravelContract.WeatherEntry.TABLE_NAME + "." + TravelContract.WeatherEntry._ID,
+            TravelContract.WeatherEntry.COLUMN_DATE,
+            TravelContract.WeatherEntry.COLUMN_SHORT_DESC,
+            TravelContract.WeatherEntry.COLUMN_MAX_TEMP,
+            TravelContract.WeatherEntry.COLUMN_MIN_TEMP,
+            TravelContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            TravelContract.WeatherEntry.COLUMN_WEATHER_ID,
+            TravelContract.LocationEntry.COLUMN_COORD_LAT,
+            TravelContract.LocationEntry.COLUMN_COORD_LONG
+    };
+
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -153,6 +192,40 @@ public class WeatherFragment extends Fragment {
         }
 
         return false;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String sortOrder = TravelContract.WeatherEntry.COLUMN_DATE + " ASC";
+
+        String locationSetting = String.valueOf(tinyDB.getDouble(GeneralValues.USER_LAT_KEY,0));
+        Uri weatherForLocationUri = TravelContract.WeatherEntry.buildWeatherLocationWithStartDate(
+                locationSetting, System.currentTimeMillis());
+
+        return new CursorLoader(getActivity(),
+                weatherForLocationUri,
+                FORECAST_COLUMNS,
+                null,
+                null,
+                sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 
     //Api to get data from server
@@ -256,7 +329,7 @@ public class WeatherFragment extends Fragment {
         }
 
         arr.remove(position);
-        adapter = new WeatherAdapter(mContext, arr,WeatherFragment.this,position,check);
+        adapter = new WeatherAdapter(mContext);
         recyclerView.setAdapter(adapter);
 
         setBackground(position);

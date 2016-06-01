@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'TravelMateKey'
             keyPassword '09c6ts545h'
-            storeFile file('C:/Users/Praneeth/Desktop/android pics/appkey/travelMate.jks')
+            storeFile file('keystore/travelMate.jks')
             storePassword '09c6ts545h'
         }
     }
@@ -42,6 +42,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:gridlayout-v7:23.4.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.intuit.sdp:sdp-android:1.0.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'

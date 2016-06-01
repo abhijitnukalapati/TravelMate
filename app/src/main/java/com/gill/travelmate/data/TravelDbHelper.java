@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.gill.travelmate.data.TravelContract.HotelEntry;
+import com.gill.travelmate.data.TravelContract.WeatherEntry;
 import com.gill.travelmate.data.TravelContract.LocationEntry;
 import com.gill.travelmate.data.TravelContract.PlacesNearByEntry;
 import com.gill.travelmate.data.TravelContract.RestaurantEntry;
@@ -30,6 +31,28 @@ public class TravelDbHelper extends SQLiteOpenHelper {
                 LocationEntry.COLUMN_COORD_LONG + " REAL NOT NULL," +
                 LocationEntry.COLUMN_CITY + " REAL NOT NULL," +
                 ");";
+
+        final String SQL_CREATE_WEATHER_TABLE = "CREATE TABLE " + WeatherEntry.TABLE_NAME + " (" +
+
+                WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                WeatherEntry.COLUMN_LOC_KEY + " INTEGER NOT NULL, " +
+                WeatherEntry.COLUMN_DATE + " INTEGER NOT NULL, " +
+                WeatherEntry.COLUMN_SHORT_DESC + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_WEATHER_ID + " INTEGER NOT NULL," +
+
+                WeatherEntry.COLUMN_MIN_TEMP + " REAL NOT NULL, " +
+                WeatherEntry.COLUMN_MAX_TEMP + " REAL NOT NULL, " +
+
+                WeatherEntry.COLUMN_HUMIDITY + " REAL NOT NULL, " +
+                WeatherEntry.COLUMN_PRESSURE + " REAL NOT NULL, " +
+                WeatherEntry.COLUMN_WIND_SPEED + " REAL NOT NULL, " +
+                WeatherEntry.COLUMN_DEGREES + " REAL NOT NULL, " +
+
+                " FOREIGN KEY (" + TravelContract.WeatherEntry.COLUMN_LOC_KEY + ") REFERENCES " +
+                LocationEntry.TABLE_NAME + " (" + LocationEntry._ID + "), " +
+
+                " UNIQUE (" + WeatherEntry.COLUMN_DATE + ", " +
+                WeatherEntry.COLUMN_LOC_KEY + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_HOTEL_TABLE = "CREATE TABLE "+ HotelEntry.TABLE_NAME + "("+
                 HotelEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -91,6 +114,7 @@ public class TravelDbHelper extends SQLiteOpenHelper {
 
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
         db.execSQL(SQL_CREATE_HOTEL_TABLE);
+        db.execSQL(SQL_CREATE_WEATHER_TABLE);
         db.execSQL(SQL_CREATE_PLACESNEARBY_TABLE);
         db.execSQL(SQL_CREATE_RESTAURANT_TABLE);
 
@@ -99,6 +123,7 @@ public class TravelDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + WeatherEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + HotelEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PlacesNearByEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + RestaurantEntry.TABLE_NAME);
