@@ -1,123 +1,137 @@
 package com.gill.travelmate.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.support.v4.view.ViewCompat;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gill.travelmate.R;
-import com.gill.travelmate.data.TravelContract;
+import com.gill.travelmate.arraylists.WeatherArraylist;
 import com.gill.travelmate.fragments.WeatherFragment;
+import com.gill.travelmate.utils.TinyDB;
 import com.gill.travelmate.utils.Utils;
 
+import java.util.ArrayList;
+
 //Adapter to add data into WeatherFragment
-public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ForecastAdapterViewHolder> {
+public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ChatHolder> {
 
-    private static final int VIEW_TYPE_TODAY = 0;
-    private static final int VIEW_TYPE_FUTURE_DAY = 1;
+    private Context mContext;
+    private ArrayList<WeatherArraylist> list;
+    WeatherFragment fragment;
+    int item_position;
+    TinyDB tinyDB;
+    String check="";
+    int date_pos=0;
 
-    private boolean mUseTodayLayout = true;
-
-    private Cursor mCursor;
-    final private Context mContext;
-
-    public class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView mIconView;
-        public final TextView mDateView;
-        public final TextView mDescriptionView;
-        public final TextView mHighTempView;
-        public final TextView mLowTempView;
-
-        public ForecastAdapterViewHolder(View view) {
-            super(view);
-            mIconView = (ImageView) view.findViewById(R.id.list_item_icon);
-            mDateView = (TextView) view.findViewById(R.id.list_item_date_textview);
-            mDescriptionView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
-            mHighTempView = (TextView) view.findViewById(R.id.list_item_high_textview);
-            mLowTempView = (TextView) view.findViewById(R.id.list_item_low_textview);
-            view.setOnClickListener(this);
+    public WeatherAdapter(Context mContext, ArrayList<WeatherArraylist> list, WeatherFragment weatherFragment, int item_position, String check) {
+        this.mContext = mContext;
+        this.list = list;
+        fragment = weatherFragment;
+        this.item_position = item_position;
+        tinyDB=new TinyDB(mContext);
+        this.check=check;
+        if(item_position>5){
+            date_pos=6;
+        }else{
+            date_pos=5;
         }
-
-        @Override
-        public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-            mCursor.moveToPosition(adapterPosition);
-            int dateColumnIndex = mCursor.getColumnIndex(TravelContract.WeatherEntry.COLUMN_DATE);
-
-        }
-    }
-
-
-    public WeatherAdapter(Context context) {
-        mContext = context;
     }
 
     @Override
-    public ForecastAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        if ( viewGroup instanceof RecyclerView ) {
-            int layoutId = -1;
-            switch (viewType) {
-                case VIEW_TYPE_TODAY: {
-                    layoutId = R.layout.list_item_forecast_today;
-                    break;
-                }
-                case VIEW_TYPE_FUTURE_DAY: {
-                    layoutId = R.layout.list_item_forecast;
-                    break;
-                }
+    public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_weather, parent, false);
+
+        final ChatHolder holder = new ChatHolder(view);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            String date=list.get(holder.getAdapterPosition()).getDate();
+                            ArrayList<WeatherArraylist> arr=new ArrayList<WeatherArraylist>();
+                            arr=Utils.getWeatherArr(tinyDB);
+                            for(int i=0;i<arr.size();i++){
+                                if(date.equalsIgnoreCase(arr.get(i).getDate())){
+                                    fragment.setValues(i,check);
+                                    break;
+                                }
+                            }
+                        }catch (Exception e){
+
+                        }
+                    }
+                });
             }
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
-            view.setFocusable(true);
-            return new ForecastAdapterViewHolder(view);
-        } else {
-            throw new RuntimeException("Not bound to RecyclerView");
+        });
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ChatHolder holder, int position) {
+        holder.ll_outer.setVisibility(View.VISIBLE);
+        try{
+            if(position>date_pos){
+                String date = Utils.getDayFromTimeStamp(list.get(position).getDate())+"\n"+Utils.getDateFromTimeStamp(list.get(position).getDate());
+                holder.tv_day.setText(date);
+            }else{
+                holder.tv_day.setText(Utils.getDayFromTimeStamp(list.get(position).getDate()));
+            }
+        }catch (Exception ex){
+
         }
-    }
+        String des="";
+        if(list.get(position).getW_full_des()!=null&&!list.get(position).getW_full_des().equalsIgnoreCase("")){
+            des = list.get(position).getW_full_des().substring(0,1).toUpperCase() + list.get(position).getW_full_des().substring(1);
+        }
+        holder.tv_weather.setText(des);
 
-    @Override
-    public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        mCursor.moveToPosition(position);
-        int weatherId = mCursor.getInt(WeatherFragment.COL_WEATHER_CONDITION_ID);
-
-
-        ViewCompat.setTransitionName(forecastAdapterViewHolder.mIconView, "iconView" + position);
-        String description = Utils.getStringForWeatherCondition(mContext, weatherId);
-
-        // Find TextView and set weather forecast on it
-        forecastAdapterViewHolder.mDescriptionView.setText(description);
-        forecastAdapterViewHolder.mDescriptionView.setContentDescription(mContext.getString(R.string.a11y_forecast, description));
-
-        double high = mCursor.getDouble(WeatherFragment.COL_WEATHER_MAX_TEMP);
-        String highString = Utils.formatTemperature(mContext, high);
-        forecastAdapterViewHolder.mHighTempView.setText(highString);
-        forecastAdapterViewHolder.mHighTempView.setContentDescription(mContext.getString(R.string.a11y_high_temp, highString));
-
-        double low = mCursor.getDouble(WeatherFragment.COL_WEATHER_MIN_TEMP);
-        String lowString = Utils.formatTemperature(mContext, low);
-        forecastAdapterViewHolder.mLowTempView.setText(lowString);
-        forecastAdapterViewHolder.mLowTempView.setContentDescription(mContext.getString(R.string.a11y_low_temp, lowString));
-
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        if(check.equalsIgnoreCase("C")){
+            //String celsius = "℃";
+            holder.tv_max_temp.setText(Utils.convert_K2C(list.get(position).getMax_temp()));
+            holder.tv_min_temp.setText(Utils.convert_K2C(list.get(position).getMin_temp()));
+        }else{
+            holder.tv_max_temp.setText( Utils.convert_K2F(list.get(position).getMax_temp()));
+            holder.tv_min_temp.setText( Utils.convert_K2F(list.get(position).getMin_temp()));
+        }
+        String img = "http://openweathermap.org/img/w/" + list.get(position).getW_icon() + ".png";
+        Glide.with(mContext).load(img).placeholder(R.drawable.logo).into(holder.img_weather);
     }
 
     @Override
     public int getItemCount() {
-        if ( null == mCursor ) return 0;
-        return mCursor.getCount();
+        return list.size();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
-        notifyDataSetChanged();
-    }
+    public class ChatHolder extends RecyclerView.ViewHolder {
 
+        TextView tv_day, tv_weather, tv_max_temp, tv_min_temp;
+        ImageView img_weather;
+        LinearLayout ll_outer;
+
+        public ChatHolder(View itemView) {
+            super(itemView);
+            tv_day = (TextView) itemView.findViewById(R.id.tv_day);
+            tv_weather = (TextView) itemView.findViewById(R.id.tv_weather);
+            tv_max_temp = (TextView) itemView.findViewById(R.id.tv_max_temp);
+            tv_min_temp = (TextView) itemView.findViewById(R.id.tv_min_temp);
+            img_weather = (ImageView) itemView.findViewById(R.id.img_weather);
+            ll_outer = (LinearLayout) itemView.findViewById(R.id.ll_outer);
+
+            Utils.typeface_font(mContext, tv_day);
+            Utils.typeface_font(mContext, tv_weather);
+            Utils.typeface_font(mContext, tv_max_temp);
+            Utils.typeface_font(mContext, tv_min_temp);
+        }
+    }
 }

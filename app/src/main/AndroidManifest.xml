@@ -86,11 +86,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <provider
-            android:name=".data.TravelProvider"
-            android:authorities="com.gill.travelmate"
-            android:exported="false"
-            android:syncable="true"/>
         <receiver
             android:name=".TravelWidgetProvider"
             android:label="@string/title_widget_today" >
