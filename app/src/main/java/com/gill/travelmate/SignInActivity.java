@@ -33,13 +33,13 @@ import retrofit2.Response;
 //Signin activity
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ImageView cross;
-    EditText et_email,et_password;
-    TextView tv_signin,title;
-    Intent i;
-    Context mContext;
-    Animation animationFadeIn;
-    Dialog dialog;
+    private ImageView cross;
+    private EditText emailEditText, passwordEditText;
+    private TextView signInTextView, title;
+    private Intent i;
+    private Context mContext;
+    private Animation animationFadeIn;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +54,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         FontHelper.applyFont(this, findViewById(R.id.container_signin), "bauhaus.ttf");
 
         mContext=SignInActivity.this;
-        dialog=Utils.get_progressDialog(mContext);
+        dialog=Utils.getProgressDialog(mContext);
 
-        initialize_views();
-        set_listener();
+        initializeViews();
+        setListener();
 
-        et_email.addTextChangedListener(new TextWatcher() {
+        emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -69,7 +69,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_email.setText(str.trim());
+                    emailEditText.setText(str.trim());
                 }
             }
 
@@ -79,7 +79,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        et_password.addTextChangedListener(new TextWatcher() {
+        passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -89,7 +89,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_password.setText(str.trim());
+                    passwordEditText.setText(str.trim());
                 }
             }
 
@@ -108,11 +108,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //initialize views
-    public void initialize_views(){
+    public void initializeViews(){
         cross=(ImageView)findViewById(R.id.cross);
-        et_email=(EditText)findViewById(R.id.et_email);
-        et_password=(EditText)findViewById(R.id.et_password);
-        tv_signin=(TextView)findViewById(R.id.tv_signin);
+        emailEditText =(EditText)findViewById(R.id.email_edit_text);
+        passwordEditText =(EditText)findViewById(R.id.password_edit_text);
+        signInTextView =(TextView)findViewById(R.id.signin_button);
         title=(TextView)findViewById(R.id.title);
 
         animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -120,9 +120,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //set on click on views
-    public void set_listener(){
+    public void setListener(){
         cross.setOnClickListener(this);
-        tv_signin.setOnClickListener(this);
+        signInTextView.setOnClickListener(this);
     }
 
     @Override
@@ -139,11 +139,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 SignInActivity.this.finish();
                 overridePendingTransition(R.anim.toright_in, R.anim.toright_out);
                 break;
-            case R.id.tv_signin:
+            case R.id.signin_button:
                 Utils.hideKeyboard(mContext,getCurrentFocus());
-                if(check_validation()){
+                if(checkValidation()){
                     if(Utils.isNetworkConnected(mContext)){
-                        api_user_signin();
+                        checkUserSignInDetails();
                     }else{
                         Utils.showToast(mContext,getString(R.string.no_internet_connection));
                     }
@@ -155,11 +155,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //check validation of fields
-    public boolean check_validation(){
-        if(!(et_email.getText().toString().matches(GeneralValues.EMAIL_PATTERN))||et_email.getText().toString().length()<=0){
+    public boolean checkValidation(){
+        if(!(emailEditText.getText().toString().matches(GeneralValues.EMAIL_PATTERN))|| emailEditText.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_valid_email));
             return false;
-        }else if(et_password.getText().toString().length()<=0){
+        }else if(passwordEditText.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_your_password));
             return false;
         }else{
@@ -167,16 +167,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    //api to check that user enter correct info or not
-    public void api_user_signin(){
+    //api to check whether user entered correct info or not
+    public void checkUserSignInDetails(){
         try{
             dialog.show();
         }catch (Exception e){
 
         }
         HashMap<String,String> map=new HashMap<>();
-        map.put("password",""+et_password.getText().toString());
-        map.put("email",""+et_email.getText().toString());
+        map.put("password",""+ passwordEditText.getText().toString());
+        map.put("email",""+ emailEditText.getText().toString());
         Call<ResponseBody> call = Utils.requestApi_Default().requestJson_withValues(GeneralValues.USER_SIGNIN, map);
 
         Utils.show_log("url = ");
@@ -201,7 +201,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         i=new Intent(mContext,SelectDestinationActivity.class);
                         i.putExtra("uid",""+data.getString("id"));
                         i.putExtra("uname",""+data.getString("username"));
-                        i.putExtra("email",""+et_email.getText().toString());
+                        i.putExtra("email",""+ emailEditText.getText().toString());
                         startActivity(i);
                         SignInActivity.this.finish();
                         overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);

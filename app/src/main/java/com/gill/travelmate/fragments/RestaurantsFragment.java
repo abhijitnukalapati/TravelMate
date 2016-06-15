@@ -47,17 +47,16 @@ import retrofit2.Response;
 //Restaurant main fragment
 public class RestaurantsFragment extends Fragment implements View.OnClickListener{
 
-    ProgressBar progress_bar;
-    ImageView reload;
-    TextView tv_message;
-    Context mContext;
-    TinyDB tinyDB;
-    RecyclerView recyclerView;
-    LinearLayoutManager layoutManager;
-    RestaurantAdapter adapter;
-    Dialog filter_dialog;
-    ArrayList<String> cat_arr,values_arr;
-    ArrayList<Integer> images;
+    private ProgressBar progressBar;
+    private ImageView reload;
+    private TextView tv_message;
+    private Context mContext;
+    private TinyDB tinyDB;
+    private RecyclerView recyclerView;
+    private RestaurantAdapter adapter;
+    private Dialog filterDialog;
+    private ArrayList<String> categoriesArray, valuesArray;
+    private ArrayList<Integer> images;
 
     public RestaurantsFragment() {
         // Required empty public constructor
@@ -72,25 +71,25 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
         mContext=getActivity();
         tinyDB=new TinyDB(mContext);
 
-        initialize_views(v);
-        set_listener();
-        set_filter_array();
+        initializeViews(v);
+        setListener();
+        setFilterArray();
 
-        layoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
         //Call default api according to the internet availablity
         if(Utils.isNetworkConnected(mContext)){
-            call_restaurant_api("");
+            getRestaurantDetailsFromYelp("");
         }else{
             if(Utils.getRestaurantArr(tinyDB)==null||Utils.getRestaurantArr(tinyDB).size()<=0){
-                progress_bar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 reload.setVisibility(View.VISIBLE);
                 tv_message.setVisibility(View.VISIBLE);
                 tv_message.setText(getString(R.string.no_internet_connection_try_again));
             }else{
-                progress_bar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 reload.setVisibility(View.GONE);
                 tv_message.setVisibility(View.GONE);
                 adapter = new RestaurantAdapter(mContext, Utils.getRestaurantArr(tinyDB));
@@ -102,48 +101,48 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
     }
 
     //initialize all views
-    public void initialize_views(View v){
-        progress_bar=(ProgressBar)v.findViewById(R.id.progress_bar);
+    public void initializeViews(View v){
+        progressBar =(ProgressBar)v.findViewById(R.id.progress_bar);
         reload=(ImageView)v.findViewById(R.id.reload);
         tv_message=(TextView)v.findViewById(R.id.tv_message);
         recyclerView=(RecyclerView)v.findViewById(R.id.recyclerView);
 
-        filter_dialog = new Dialog(mContext,R.style.DialogSlideAnim);
-        filter_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        filter_dialog.setContentView(R.layout.dialog_filter);
-        filter_dialog.setCancelable(true);
+        filterDialog = new Dialog(mContext,R.style.DialogSlideAnim);
+        filterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        filterDialog.setContentView(R.layout.dialog_filter);
+        filterDialog.setCancelable(true);
     }
 
     //set on click listener on views
-    public void set_listener(){
+    public void setListener(){
         reload.setOnClickListener(this);
     }
 
     //set filter list of restaurant
-    public void set_filter_array(){
-        cat_arr=new ArrayList<>();
-        cat_arr.add("American");
-        cat_arr.add("Burgers");
-        cat_arr.add("Chinese");
-        cat_arr.add("Delis");
-        cat_arr.add("Indian");
-        cat_arr.add("Italian");
-        cat_arr.add("Japanese");
-        cat_arr.add("Mexican");
-        cat_arr.add("Pizza");
-        cat_arr.add("SeaFood");
+    public void setFilterArray(){
+        categoriesArray =new ArrayList<>();
+        categoriesArray.add("American");
+        categoriesArray.add("Burgers");
+        categoriesArray.add("Chinese");
+        categoriesArray.add("Delis");
+        categoriesArray.add("Indian");
+        categoriesArray.add("Italian");
+        categoriesArray.add("Japanese");
+        categoriesArray.add("Mexican");
+        categoriesArray.add("Pizza");
+        categoriesArray.add("SeaFood");
 
-        values_arr=new ArrayList<>();
-        values_arr.add("newamerican");
-        values_arr.add("burgers");
-        values_arr.add("chinese");
-        values_arr.add("delis");
-        values_arr.add("indpak");
-        values_arr.add("italian");
-        values_arr.add("japanese");
-        values_arr.add("mexican");
-        values_arr.add("pizza");
-        values_arr.add("seafood");
+        valuesArray =new ArrayList<>();
+        valuesArray.add("newamerican");
+        valuesArray.add("burgers");
+        valuesArray.add("chinese");
+        valuesArray.add("delis");
+        valuesArray.add("indpak");
+        valuesArray.add("italian");
+        valuesArray.add("japanese");
+        valuesArray.add("mexican");
+        valuesArray.add("pizza");
+        valuesArray.add("seafood");
 
         images = new ArrayList<>();
         images.add(R.drawable.american);
@@ -164,9 +163,9 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
         switch (v.getId()){
             case R.id.reload:
                 if(Utils.isNetworkConnected(mContext)){
-                    call_restaurant_api("");
+                    getRestaurantDetailsFromYelp("");
                 }else{
-                    progress_bar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     reload.setVisibility(View.VISIBLE);
                     tv_message.setVisibility(View.VISIBLE);
                     tv_message.setText(getString(R.string.no_internet_connection_try_again));
@@ -178,9 +177,9 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
     }
 
     //call api to get restaurant data from server
-    public void call_restaurant_api(String sort){
+    public void getRestaurantDetailsFromYelp(String sort){
         reload.setVisibility(View.GONE);
-        progress_bar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         tv_message.setVisibility(View.VISIBLE);
         tv_message.setText(getString(R.string.loading));
 
@@ -212,7 +211,7 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
                 Utils.show_log("in result "+searchResponse);
 
                 reload.setVisibility(View.GONE);
-                progress_bar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 tv_message.setVisibility(View.GONE);
 
                 ArrayList<RestaurantsArraylist> arr=new ArrayList<>();
@@ -258,7 +257,7 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
                     }
                 }catch (Exception e){
                     reload.setVisibility(View.VISIBLE);
-                    progress_bar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     tv_message.setVisibility(View.VISIBLE);
                     tv_message.setText(getString(R.string.error_while_fetching));
                     Utils.show_log("Exp = "+e.getMessage().toString());
@@ -270,7 +269,7 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
                 try{
                     Utils.show_log("in exp = "+t.getMessage().toString());
                     reload.setVisibility(View.VISIBLE);
-                    progress_bar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     tv_message.setVisibility(View.VISIBLE);
                     if(t.getMessage().toString().equalsIgnoreCase(getString(R.string.bad_request))){
                         tv_message.setText(getString(R.string.no_data_found_location));
@@ -288,7 +287,7 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
     }
 
     //restaurant sort dialog
-    public void show_sort_dialog() {
+    public void showRestaurantsSortDialog() {
         final Dialog dialog = new Dialog(mContext,R.style.DialogSlideAnim);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_sort);
@@ -309,7 +308,7 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
                 ArrayList<RestaurantsArraylist> arr=new ArrayList<RestaurantsArraylist>();
                 adapter = new RestaurantAdapter(mContext, arr);
                 recyclerView.setAdapter(adapter);
-                call_restaurant_api("2");
+                getRestaurantDetailsFromYelp("2");
                 dialog.dismiss();
             }
         });
@@ -326,41 +325,41 @@ public class RestaurantsFragment extends Fragment implements View.OnClickListene
     }
 
     //restaurant filter dialog
-    public void show_filter_dialog() {
-        FontHelper.applyFont(getActivity(), filter_dialog.findViewById(R.id.container_filter_dialog), "bauhaus.ttf");
+    public void showRestaurantsFilterDialog() {
+        FontHelper.applyFont(getActivity(), filterDialog.findViewById(R.id.container_filter_dialog), "bauhaus.ttf");
 
-        RecyclerView recyclerView1 = (RecyclerView) filter_dialog.findViewById(R.id.recyclerView);
+        RecyclerView filterRecyclerView = (RecyclerView) filterDialog.findViewById(R.id.recyclerView);
 
-        LinearLayoutManager layoutManager1;
-        RestaurantFilterAdapter adapter1;
-        layoutManager1 = new LinearLayoutManager(mContext);
-        layoutManager1.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView1.setLayoutManager(layoutManager1);
+        LinearLayoutManager filterLayoutManager;
+        RestaurantFilterAdapter filterAdapter;
+        filterLayoutManager = new LinearLayoutManager(mContext);
+        filterLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        filterRecyclerView.setLayoutManager(filterLayoutManager);
 
-        adapter1 = new RestaurantFilterAdapter(mContext, cat_arr,values_arr, images,RestaurantsFragment.this);
-        recyclerView1.setAdapter(adapter1);
+        filterAdapter = new RestaurantFilterAdapter(mContext, categoriesArray, valuesArray, images,RestaurantsFragment.this);
+        filterRecyclerView.setAdapter(filterAdapter);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = filter_dialog.getWindow();
+        Window window = filterDialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
         lp.copyFrom(window.getAttributes());
         //This makes the dialog take up the full width
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
-        filter_dialog.show();
+        filterDialog.show();
     }
 
     //on filter recycler view click call api to get filter data
     public void onRecyclerClick(int position){
         if(Utils.isNetworkConnected(mContext)){
-            tinyDB.putString(GeneralValues.RESTAURANT_FILTER,values_arr.get(position));
+            tinyDB.putString(GeneralValues.RESTAURANT_FILTER, valuesArray.get(position));
 
             ArrayList<RestaurantsArraylist> arr=new ArrayList<RestaurantsArraylist>();
             adapter = new RestaurantAdapter(mContext, arr);
             recyclerView.setAdapter(adapter);
-            call_restaurant_api("");
-            filter_dialog.dismiss();
+            getRestaurantDetailsFromYelp("");
+            filterDialog.dismiss();
         }else{
             Utils.showToast(mContext,getString(R.string.no_internet_connection));
         }

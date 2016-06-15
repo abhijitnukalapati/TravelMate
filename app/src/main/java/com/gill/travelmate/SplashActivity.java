@@ -21,10 +21,10 @@ import com.gill.travelmate.utils.TinyDB;
 //First screen when app starts
 public class SplashActivity extends AppCompatActivity {
 
-    ImageView logo;
-    TextView title;
-    Context mContext;
-    TinyDB tinyDB;
+    private ImageView logo;
+    private TextView title;
+    private Context mContext;
+    private TinyDB tinyDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

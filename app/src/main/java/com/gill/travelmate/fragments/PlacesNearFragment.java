@@ -281,7 +281,7 @@ public class PlacesNearFragment extends Fragment implements View.OnClickListener
     }
 
     //show places near sort dialog
-    public void show_sort_dialog() {
+    public void showPlacesNearBySortDialog() {
         final Dialog dialog = new Dialog(mContext, R.style.DialogSlideAnim);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_sort);
@@ -318,7 +318,7 @@ public class PlacesNearFragment extends Fragment implements View.OnClickListener
     }
 
     //show places near filter dialog
-    public void show_filter_dialog() {
+    public void showPlacesNearByFilterDialog() {
         FontHelper.applyFont(getActivity(), filter_dialog.findViewById(R.id.container_filter_dialog), "bauhaus.ttf");
 
         RecyclerView recyclerView1 = (RecyclerView) filter_dialog.findViewById(R.id.recyclerView);

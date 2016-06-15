@@ -91,20 +91,20 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ChatHold
 
         }
         String des="";
-        if(list.get(position).getW_full_des()!=null&&!list.get(position).getW_full_des().equalsIgnoreCase("")){
-            des = list.get(position).getW_full_des().substring(0,1).toUpperCase() + list.get(position).getW_full_des().substring(1);
+        if(list.get(position).getWeatherFullDescription()!=null&&!list.get(position).getWeatherFullDescription().equalsIgnoreCase("")){
+            des = list.get(position).getWeatherFullDescription().substring(0,1).toUpperCase() + list.get(position).getWeatherFullDescription().substring(1);
         }
         holder.tv_weather.setText(des);
 
         if(check.equalsIgnoreCase("C")){
             //String celsius = "℃";
-            holder.tv_max_temp.setText(Utils.convert_K2C(list.get(position).getMax_temp()));
-            holder.tv_min_temp.setText(Utils.convert_K2C(list.get(position).getMin_temp()));
+            holder.tv_max_temp.setText(Utils.convert_K2C(list.get(position).getMaximunTemperature()));
+            holder.tv_min_temp.setText(Utils.convert_K2C(list.get(position).getMinTemperature()));
         }else{
-            holder.tv_max_temp.setText( Utils.convert_K2F(list.get(position).getMax_temp()));
-            holder.tv_min_temp.setText( Utils.convert_K2F(list.get(position).getMin_temp()));
+            holder.tv_max_temp.setText( Utils.convert_K2F(list.get(position).getMaximunTemperature()));
+            holder.tv_min_temp.setText( Utils.convert_K2F(list.get(position).getMinTemperature()));
         }
-        String img = "http://openweathermap.org/img/w/" + list.get(position).getW_icon() + ".png";
+        String img = "http://openweathermap.org/img/w/" + list.get(position).getWeatherIcon() + ".png";
         Glide.with(mContext).load(img).placeholder(R.drawable.logo).into(holder.img_weather);
     }
 
@@ -122,10 +122,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ChatHold
         public ChatHolder(View itemView) {
             super(itemView);
             tv_day = (TextView) itemView.findViewById(R.id.tv_day);
-            tv_weather = (TextView) itemView.findViewById(R.id.tv_weather);
+            tv_weather = (TextView) itemView.findViewById(R.id.weather_view);
             tv_max_temp = (TextView) itemView.findViewById(R.id.tv_max_temp);
             tv_min_temp = (TextView) itemView.findViewById(R.id.tv_min_temp);
-            img_weather = (ImageView) itemView.findViewById(R.id.img_weather);
+            img_weather = (ImageView) itemView.findViewById(R.id.weather_icon);
             ll_outer = (LinearLayout) itemView.findViewById(R.id.ll_outer);
 
             Utils.typeface_font(mContext, tv_day);

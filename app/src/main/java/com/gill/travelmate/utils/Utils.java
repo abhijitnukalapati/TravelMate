@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -66,31 +65,6 @@ public class Utils {
     }
 
     /**
-     * Api with very less response time
-     *
-     * @return Returns Apis
-     */
-//    public static Apis requestApi_lesstime() {
-//        OkHttpClient client = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
-//                .writeTimeout(5, TimeUnit.SECONDS)
-//                .readTimeout(5, TimeUnit.SECONDS)
-//                .build();
-//        Retrofit retrofit = new Retrofit.Builder().baseUrl(GeneralValues.BASE_URL).client(client).addConverterFactory(GsonConverterFactory.create()).build();
-//        Apis apis = retrofit.create(Apis.class);
-//        return apis;
-//    }
-//
-//    public static Apis requestApi() {
-//        OkHttpClient client = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
-//                .writeTimeout(30, TimeUnit.SECONDS)
-//                .readTimeout(30, TimeUnit.SECONDS)
-//                .build();
-//        Retrofit retrofit = new Retrofit.Builder().baseUrl(GeneralValues.BASE_URL).client(client).addConverterFactory(GsonConverterFactory.create()).build();
-//        Apis apis = retrofit.create(Apis.class);
-//        return apis;
-//    }
-
-    /**
      * Check internet availabilty
      *
      * @param mContext Context of activity or fragment
@@ -142,7 +116,7 @@ public class Utils {
      * @param mContext Context of the Activity or fragment
      * @return Dialog with progress bar
      */
-    public static Dialog get_progressDialog(Context mContext) {
+    public static Dialog getProgressDialog(Context mContext) {
         Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_progress);
@@ -183,7 +157,7 @@ public class Utils {
      * @param mContext Context of the Activity or Fragment.
      * @param url      Url that you want to open in Browser
      */
-    public static void intent_to_Browser(Context mContext, String url) {
+    public static void intentToBrowser(Context mContext, String url) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             mContext.startActivity(intent);
@@ -198,21 +172,10 @@ public class Utils {
      * @param mContext Context of the Activity or Fragment.
      * @param number   Number on which want to make a call
      */
-    public static void intent_to_phone(Context mContext, String number) {
+    public static void intentToPhone(Context mContext, String number) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null));
         mContext.startActivity(intent);
     }
-
-    /**
-     * Check weather device is Tablet or not.
-     *
-     * @param mContext Context of the Activity.
-     * @return Returns true if device is Tablet and false when its not.
-     */
-    public static boolean isTablet(Context mContext) {
-        return (mContext.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
 
     /**
      * Show Log

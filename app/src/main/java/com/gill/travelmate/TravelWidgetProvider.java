@@ -25,7 +25,7 @@ public class TravelWidgetProvider extends AppWidgetProvider {
 
             Intent launchIntent = new Intent(context, SignInActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, launchIntent, 0);
-            views.setOnClickPendingIntent(R.id.tv_signin, pendingIntent);
+            views.setOnClickPendingIntent(R.id.signin_button, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
@@ -33,6 +33,6 @@ public class TravelWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     private void setRemoteContentDescription(RemoteViews views, String description) {
-        views.setContentDescription(R.id.tv_signin, description);
+        views.setContentDescription(R.id.signin_button, description);
     }
 }

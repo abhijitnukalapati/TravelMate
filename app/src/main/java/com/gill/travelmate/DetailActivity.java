@@ -36,17 +36,24 @@ import java.util.ArrayList;
 //Detail activity to show detail of everything
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback {
 
-    Context mContext;
-    Intent i;
-    String id = "", name = "", rating = "", address = "", review = "", category = "", check = "", image = "", phone = "", url = "", distance = "", share_text = "";
-    double lat = 0, lng = 0;
-    int position = 0;
-    TinyDB tinyDB;
-    CollapsingToolbarLayout toolbar_layout;
-    ImageView detail_image;
-    TextView tv_address, tv_categories, tv_review, tv_phone, tv_url, tv_rating_msg;
-    RatingBar ratingBar;
-    private GoogleMap mMap;
+    private Context mContext;
+    private String id;
+    private String name;
+    private String rating;
+    private String address;
+    private String review;
+    private String category;
+    private String image;
+    private String phone;
+    private String url;
+    private String distance;
+    private String share_text;
+    private double latitude = 0, longitude = 0;
+    private TinyDB tinyDB;
+    private CollapsingToolbarLayout toolbar_layout;
+    private ImageView detail_image;
+    private TextView addressTextView, categoriesTextView, reviewstextView, phoneTextView, urlTextView, ratingView;
+    private RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +68,19 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         FontHelper.applyFont(this, findViewById(R.id.container_detail), "bauhaus.ttf");
 
-        i = getIntent();
-        position = Integer.parseInt(i.getStringExtra("position"));
-        check = i.getStringExtra("check");
+        Intent i = getIntent();
+        int position = Integer.parseInt(i.getStringExtra("position"));
+        String check = i.getStringExtra("check");
 
         try {
             //Set detail page data accorting to selected item on previous page
             if (check.equalsIgnoreCase(GeneralValues.HOTEL_CHECK)) {
+
                 ArrayList<HotelsArraylist> arr;
                 arr = Utils.getHotelArr(tinyDB);
-                lat = arr.get(position).getLatitude();
-                lng = arr.get(position).getLongitude();
+
+                latitude = arr.get(position).getLatitude();
+                longitude = arr.get(position).getLongitude();
                 id = arr.get(position).getId();
                 name = arr.get(position).getName();
                 rating = arr.get(position).getRating();
@@ -79,21 +88,27 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 review = arr.get(position).getReviews();
                 category = arr.get(position).getCategory();
                 image = arr.get(position).getImage();
+
                 if (image != null) {
                     image = image.substring(0, image.length() - 6) + "o.jpg";
                 } else {
                     image = "";
                 }
+
                 phone = arr.get(position).getPhone();
                 url = arr.get(position).getUrl();
                 distance = arr.get(position).getDistance();
+                share_text = "Here is a place I found on TravelMate\n\n" +
+                        name + "\n" + url + "\n\n" +
+                        address.substring(1, address.length() - 1);
 
-                share_text = "Here is a place I found on TravelMate\n\n" + name + "\n" + url + "\n\n" + address.substring(1, address.length() - 1);
             } else if (check.equalsIgnoreCase(GeneralValues.RESTAURANT_CHECK)) {
+
                 ArrayList<RestaurantsArraylist> arr ;
                 arr = Utils.getRestaurantArr(tinyDB);
-                lat = arr.get(position).getLatitude();
-                lng = arr.get(position).getLongitude();
+
+                latitude = arr.get(position).getLatitude();
+                longitude = arr.get(position).getLongitude();
                 id = arr.get(position).getId();
                 name = arr.get(position).getName();
                 rating = arr.get(position).getRating();
@@ -109,13 +124,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 phone = arr.get(position).getPhone();
                 url = arr.get(position).getUrl();
                 distance = arr.get(position).getDistance();
+                share_text = "Here is a place I found on TravelMate\n\n" +
+                        name + "\n" + url + "\n\n" +
+                        address.substring(1, address.length() - 1);
 
-                share_text = "Here is a place I found on TravelMate\n\n" + name + "\n" + url + "\n\n" + address.substring(1, address.length() - 1);
             } else if (check.equalsIgnoreCase(GeneralValues.PLACES_CHECK)) {
                 ArrayList<PlacesNearArraylist> arr ;
                 arr = Utils.getPlacesArr(tinyDB);
-                lat = arr.get(position).getLatitude();
-                lng = arr.get(position).getLongitude();
+
+                latitude = arr.get(position).getLatitude();
+                longitude = arr.get(position).getLongitude();
                 id = arr.get(position).getId();
                 name = arr.get(position).getName();
                 rating = arr.get(position).getRating();
@@ -131,13 +149,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 phone = arr.get(position).getPhone();
                 url = arr.get(position).getUrl();
                 distance = arr.get(position).getDistance();
+                share_text = "Here is a place I found on TravelMate\n\n" +
+                        name + "\n" + url + "\n\n" +
+                        address.substring(1, address.length() - 1);
 
-                share_text = "Here is a place I found on TravelMate\n\n" + name + "\n" + url + "\n\n" + address.substring(1, address.length() - 1);
             } else if (check.equalsIgnoreCase(GeneralValues.MYSAVES_CHECK)) {
                 ArrayList<MySavesArraylist> arr ;
                 arr = Utils.getMySavesArr(tinyDB);
-                lat = arr.get(position).getLatitude();
-                lng = arr.get(position).getLongitude();
+
+                latitude = arr.get(position).getLatitude();
+                longitude = arr.get(position).getLongitude();
                 id = arr.get(position).getId();
                 name = arr.get(position).getName();
                 rating = arr.get(position).getRating();
@@ -148,12 +169,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 phone = arr.get(position).getPhone();
                 url = arr.get(position).getUrl();
                 distance = arr.get(position).getDistance();
-
-                share_text = "Here is a place I found on TravelMate\n\n" + name + "\n" + url + "\n\n" + address.substring(1, address.length() - 1);
+                share_text = "Here is a place I found on TravelMate\n\n" +
+                        name + "\n" + url + "\n\n" +
+                        address.substring(1, address.length() - 1);
             }
 
-            initialize_views();
-            set_listener();
+            initializeViews();
+            setListener();
 
             //Floating button for save functionality
             final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -161,10 +183,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (check_record_in_MySaves(id)) {
+                        if (checkIfRecordIsSaved(id)) {
                             ArrayList<MySavesArraylist> arr;
                             arr = Utils.getMySavesArr(tinyDB);
-                            arr.remove(get_index(id));
+                            arr.remove(getIndex(id));
                             Utils.setMySavesArr(tinyDB, arr);
                             fab.setImageResource(R.drawable.heart_empty);
                             Utils.showToast(mContext, getString(R.string.record_remove));
@@ -173,7 +195,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                             if (Utils.getMySavesArr(tinyDB) != null && Utils.getMySavesArr(tinyDB).size() > 0) {
                                 arr = Utils.getMySavesArr(tinyDB);
                             }
-                            arr.add(new MySavesArraylist(id, name, rating, address, image, lat, lng, review, distance, category, phone, url));
+                            arr.add(new MySavesArraylist(id, name, rating, address, image, latitude, longitude, review, distance, category, phone, url));
                             Utils.setMySavesArr(tinyDB, arr);
                             fab.setImageResource(R.drawable.heart_filled);
                             Utils.showToast(mContext, getString(R.string.record_added));
@@ -185,32 +207,36 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             //Set all views values
             toolbar_layout.setTitle(name);
             Glide.with(mContext).load(image).placeholder(R.drawable.logo).error(R.drawable.no_image).into(detail_image);
-            tv_address.setText(name + "\n\n" + address.substring(1, address.length() - 1));
-            tv_categories.setText(category);
+            addressTextView.setText(name + "\n\n" + address.substring(1, address.length() - 1));
+            categoriesTextView.setText(category);
+
             String reviews = review + " " + mContext.getString(R.string.reviews_save);
-            tv_review.setText(reviews);
+            reviewstextView.setText(reviews);
+
             if (rating.equalsIgnoreCase("") || rating.equalsIgnoreCase("0.0")) {
-                tv_rating_msg.setVisibility(View.VISIBLE);
+                ratingView.setVisibility(View.VISIBLE);
                 ratingBar.setVisibility(View.GONE);
-                tv_rating_msg.setText(getString(R.string.no_rating_available));
+                ratingView.setText(getString(R.string.no_rating_available));
             } else {
-                tv_rating_msg.setVisibility(View.GONE);
+                ratingView.setVisibility(View.GONE);
                 ratingBar.setVisibility(View.VISIBLE);
                 ratingBar.setRating(Float.parseFloat(rating));
             }
 
             if (phone == null || phone.equalsIgnoreCase("")) {
-                tv_phone.setText(getString(R.string.no_number_available));
+                phoneTextView.setText(getString(R.string.no_number_available));
             } else {
-                tv_phone.setText(phone);
+                phoneTextView.setText(phone);
             }
+
             if (url == null || url.equalsIgnoreCase("")) {
-                tv_url.setText(getString(R.string.no_url_available));
+                urlTextView.setText(getString(R.string.no_url_available));
             } else {
-                tv_url.setText(R.string.details_website);
+                urlTextView.setText(R.string.details_website);
             }
+
             if (fab != null) {
-                if (check_record_in_MySaves(id)) {
+                if (checkIfRecordIsSaved(id)) {
 
                     fab.setImageResource(R.drawable.heart_filled);
                 } else {
@@ -227,16 +253,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //initialize all views
-    public void initialize_views() {
+    public void initializeViews() {
         toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         detail_image = (ImageView) findViewById(R.id.detail_image);
-        tv_address = (TextView) findViewById(R.id.tv_address);
-        tv_categories = (TextView) findViewById(R.id.tv_categories);
-        tv_review = (TextView) findViewById(R.id.tv_review);
+        addressTextView = (TextView) findViewById(R.id.tv_address);
+        categoriesTextView = (TextView) findViewById(R.id.tv_categories);
+        reviewstextView = (TextView) findViewById(R.id.tv_review);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        tv_url = (TextView) findViewById(R.id.tv_url);
-        tv_phone = (TextView) findViewById(R.id.tv_phone);
-        tv_rating_msg = (TextView) findViewById(R.id.tv_rating_msg);
+        urlTextView = (TextView) findViewById(R.id.tv_url);
+        phoneTextView = (TextView) findViewById(R.id.tv_phone);
+        ratingView = (TextView) findViewById(R.id.tv_rating_msg);
 
         Typeface tf = Typeface.createFromAsset(getAssets(), "bauhaus.ttf");
         toolbar_layout.setCollapsedTitleTypeface(tf);
@@ -244,9 +270,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //set listener on all views
-    public void set_listener() {
-        tv_phone.setOnClickListener(this);
-        tv_url.setOnClickListener(this);
+    public void setListener() {
+        phoneTextView.setOnClickListener(this);
+        urlTextView.setOnClickListener(this);
     }
 
     //setting menu item
@@ -286,14 +312,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 if (phone == null || phone.equalsIgnoreCase("")) {
                     Utils.showToast(mContext, getString(R.string.no_number_available));
                 } else {
-                    Utils.intent_to_phone(mContext, tv_phone.getText().toString());
+                    Utils.intentToPhone(mContext, phoneTextView.getText().toString());
                 }
                 break;
             case R.id.tv_url:
                 if (url == null || url.equalsIgnoreCase("")) {
                     Utils.showToast(mContext, getString(R.string.no_url_available));
                 } else {
-                    Utils.intent_to_Browser(mContext, url);
+                    Utils.intentToBrowser(mContext, url);
                 }
                 break;
             default:
@@ -302,7 +328,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //check record is already into MySaves or not
-    public boolean check_record_in_MySaves(String id) {
+    public boolean checkIfRecordIsSaved(String id) {
         boolean token = false;
         if (Utils.getMySavesArr(tinyDB) != null && Utils.getMySavesArr(tinyDB).size() > 0) {
             ArrayList<MySavesArraylist> arr;
@@ -321,7 +347,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         return token;
     }
 
-    public int get_index(String id) {
+    public int getIndex(String id) {
         int index = 0;
         ArrayList<MySavesArraylist> arr;
         arr = Utils.getMySavesArr(tinyDB);
@@ -339,13 +365,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     //initialize map and add location
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        GoogleMap mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker
-        if (lat == 0) {
+        if (latitude == 0) {
             Utils.showToast(mContext, getString(R.string.can_not_find_location));
         } else {
-            LatLng location = new LatLng(lat, lng);
+            LatLng location = new LatLng(latitude, longitude);
             mMap.addMarker(new MarkerOptions().position(location).title(name));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(12.0f));

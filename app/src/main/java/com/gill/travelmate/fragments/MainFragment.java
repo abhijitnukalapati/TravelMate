@@ -30,10 +30,10 @@ import java.util.List;
 //This is main fragment in which all three fragment infulates
 public class MainFragment extends Fragment {
 
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    TinyDB tinyDB;
-    Context mContext;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private TinyDB tinyDB;
+    private Context mContext;
 
     public MainFragment() {
         // Required empty public constructor
@@ -68,9 +68,9 @@ public class MainFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 if(position==0){
-                    HomeActivity.filter_icon.setVisibility(View.GONE);
+                    HomeActivity.filterIcon.setVisibility(View.GONE);
                 }else{
-                    HomeActivity.filter_icon.setVisibility(View.VISIBLE);
+                    HomeActivity.filterIcon.setVisibility(View.VISIBLE);
                 }
 
                 if(position==0){
@@ -95,34 +95,34 @@ public class MainFragment extends Fragment {
         });
 
         //on sort button click
-        HomeActivity.sort_icon.setOnClickListener(new View.OnClickListener() {
+        HomeActivity.sortIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ViewPagerAdapter adapter = ((ViewPagerAdapter) viewPager.getAdapter());
                 if(tinyDB.getBoolean(GeneralValues.HOTEL_FRAGMENT)){
                     HotelsFragment fragment = (HotelsFragment) adapter.getItem(0);
-                    fragment.show_sort_dialog();
+                    fragment.showHotelsSortDialog();
                 }else if(tinyDB.getBoolean(GeneralValues.RESTAURANT_FRAGMENT)){
                     RestaurantsFragment fragment = (RestaurantsFragment) adapter.getItem(1);
-                    fragment.show_sort_dialog();
+                    fragment.showRestaurantsSortDialog();
                 }else if(tinyDB.getBoolean(GeneralValues.PLACES_FRAGMENT)){
                     PlacesNearFragment fragment = (PlacesNearFragment) adapter.getItem(2);
-                    fragment.show_sort_dialog();
+                    fragment.showPlacesNearBySortDialog();
                 }
             }
         });
 
         //on filter button click
-        HomeActivity.filter_icon.setOnClickListener(new View.OnClickListener() {
+        HomeActivity.filterIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ViewPagerAdapter adapter = ((ViewPagerAdapter) viewPager.getAdapter());
                 if(tinyDB.getBoolean(GeneralValues.RESTAURANT_FRAGMENT)){
                     RestaurantsFragment fragment = (RestaurantsFragment) adapter.getItem(1);
-                    fragment.show_filter_dialog();
+                    fragment.showRestaurantsFilterDialog();
                 }else if(tinyDB.getBoolean(GeneralValues.PLACES_FRAGMENT)){
                     PlacesNearFragment fragment = (PlacesNearFragment) adapter.getItem(2);
-                    fragment.show_filter_dialog();
+                    fragment.showPlacesNearByFilterDialog();
                 }
             }
         });

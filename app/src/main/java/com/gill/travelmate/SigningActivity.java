@@ -41,16 +41,16 @@ import retrofit2.Response;
 //Screen after splash screen
 public class SigningActivity extends AppCompatActivity implements View.OnClickListener{
 
-    LinearLayout ll_fb_signin;
-    TextView tv_signup,tv_signin,title;
-    Context mContext;
-    TinyDB tinyDB;
-    Animation animationFadeIn;
-    CallbackManager callbackManager;
-    LoginButton login_button;
-    String fid="",fname="",femail="";
-    Dialog dialog;
-    Intent i;
+    private LinearLayout facebookSignInLayout;
+    private TextView signUpTextView, signInTextView,title;
+    private Context mContext;
+    private TinyDB tinyDB;
+    private Animation animationFadeIn;
+    private CallbackManager callbackManager;
+    private LoginButton login_button;
+    private String facebookId = "", facebookUserName = "", facebookEmailId = "";
+    private Dialog dialog;
+    private Intent i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +67,13 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
 
         mContext=SigningActivity.this;
         tinyDB=new TinyDB(mContext);
-        dialog=Utils.get_progressDialog(mContext);
+        dialog=Utils.getProgressDialog(mContext);
 
         //callback for facebook login
         callbackManager = CallbackManager.Factory.create();
 
-        initialize_views();
-        set_listener();
+        initializeViews();
+        setListener();
 
         //facebook login button settings
         login_button.setReadPermissions(Arrays.asList("email", "public_profile", "user_friends"));
@@ -85,15 +85,15 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         if (response.getError() == null) {
-                            femail = object.optString("email");
-                            fid = object.optString("id");
-                            fname = object.optString("name");
-                            if(femail==null){
-                                femail="";
+                            facebookEmailId = object.optString("email");
+                            facebookId = object.optString("id");
+                            facebookUserName = object.optString("name");
+                            if(facebookEmailId ==null){
+                                facebookEmailId ="";
                             }
 
                             //call api to save fb login data on server
-                            api_facebook_login();
+                            putFacebookLoginDetails();
                         } else {
                             Utils.showToast(getApplicationContext(),getString(R.string.can_not_login));
                         }
@@ -119,12 +119,12 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //initialize views
-    public void initialize_views(){
+    public void initializeViews(){
         login_button = (LoginButton) findViewById(R.id.login_button);
 
-        ll_fb_signin=(LinearLayout)findViewById(R.id.ll_fb_signin);
-        tv_signin=(TextView)findViewById(R.id.tv_signin);
-        tv_signup=(TextView)findViewById(R.id.tv_signup);
+        facebookSignInLayout =(LinearLayout)findViewById(R.id.fbSignIn_layout);
+        signInTextView =(TextView)findViewById(R.id.signin_button);
+        signUpTextView =(TextView)findViewById(R.id.signUp_button);
         title=(TextView)findViewById(R.id.title);
 
         animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -132,10 +132,10 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //set listener on views
-    public void set_listener(){
-        ll_fb_signin.setOnClickListener(this);
-        tv_signin.setOnClickListener(this);
-        tv_signup.setOnClickListener(this);
+    public void setListener(){
+        facebookSignInLayout.setOnClickListener(this);
+        signInTextView.setOnClickListener(this);
+        signUpTextView.setOnClickListener(this);
     }
 
     @Override
@@ -156,18 +156,18 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.ll_fb_signin:
+            case R.id.fbSignIn_layout:
                 if(Utils.isNetworkConnected(mContext)){
                     login_button.performClick();
                 }else{
                     Utils.showToast(mContext,getString(R.string.no_internet_connection));
                 }
                 break;
-            case R.id.tv_signin:
+            case R.id.signin_button:
                 startActivity(new Intent(getApplicationContext(), SignInActivity.class));
                 overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);
                 break;
-            case R.id.tv_signup:
+            case R.id.signUp_button:
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
                 overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);
                 break;
@@ -177,16 +177,16 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //api to save Fb login data on server
-    public void api_facebook_login(){
+    public void putFacebookLoginDetails(){
         try{
             dialog.show();
         }catch (Exception e){
 
         }
         HashMap<String,String> map=new HashMap<>();
-        map.put("fID",""+fid);
-        map.put("username",""+fname);
-        map.put("email",""+femail);
+        map.put("fID",""+ facebookId);
+        map.put("username",""+ facebookUserName);
+        map.put("email",""+ facebookEmailId);
         Call<ResponseBody> call = Utils.requestApi_Default().requestJson_withValues(GeneralValues.FACEBOOK_LOGIN, map);
 
         //Utils.show_log("url = "+call.request().url());
@@ -211,7 +211,7 @@ public class SigningActivity extends AppCompatActivity implements View.OnClickLi
                         i=new Intent(mContext,SelectDestinationActivity.class);
                         i.putExtra("uid",""+data.getString("id"));
                         i.putExtra("uname",""+data.getString("username"));
-                        i.putExtra("email",""+femail);
+                        i.putExtra("email",""+ facebookEmailId);
                         startActivity(i);
                         overridePendingTransition(R.anim.to_leftin, R.anim.to_leftout);
                     }else{

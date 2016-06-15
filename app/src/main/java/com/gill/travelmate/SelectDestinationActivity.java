@@ -45,16 +45,16 @@ import java.util.List;
 //Select deatination on this activity
 public class SelectDestinationActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    ImageView cross;
-    AutoCompleteTextView et_destination;
-    TextView tv_enter, title;
-    Animation animationFadeIn;
-    Intent i;
-    String UID = "", UNAME = "",EMAIL="";
-    Context mContext;
-    TinyDB tinyDB;
-    double lat=0,lng=0;
-    Dialog dialog;
+    private ImageView cross;
+    private AutoCompleteTextView destinationTextView;
+    private TextView enterTextView, title;
+    private Animation animationFadeIn;
+    private Intent i;
+    private String userID = "", UNAME = "",EMAIL="";
+    private Context mContext;
+    private TinyDB tinyDB;
+    private double lat=0,lng=0;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +71,17 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
         mContext=SelectDestinationActivity.this;
         tinyDB=new TinyDB(mContext);
 
-        dialog=Utils.get_progressDialog(mContext);
+        dialog=Utils.getProgressDialog(mContext);
 
-        initialize_views();
-        set_listener();
+        initializeViews();
+        setListener();
 
-        UID = getIntent().getStringExtra("uid");
+        userID = getIntent().getStringExtra("uid");
         UNAME = getIntent().getStringExtra("uname");
         EMAIL = getIntent().getStringExtra("email");
-        Utils.show_log("uid = " + UID + " name = " + UNAME);
+        Utils.show_log("uid = " + userID + " name = " + UNAME);
 
-        et_destination.addTextChangedListener(new TextWatcher() {
+        destinationTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -91,7 +91,7 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_destination.setText(str.trim());
+                    destinationTextView.setText(str.trim());
                 }
             }
 
@@ -101,9 +101,9 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
             }
         });
 
-        et_destination.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.search_list_item));
-        et_destination.setOnItemClickListener(this);
-        et_destination.setText(tinyDB.getString(GeneralValues.USER_DESTINATION_KEY));
+        destinationTextView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.search_list_item));
+        destinationTextView.setOnItemClickListener(this);
+        destinationTextView.setText(tinyDB.getString(GeneralValues.USER_DESTINATION_KEY));
     }
 
     @Override
@@ -111,10 +111,10 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
     }
 
     //initialize views
-    public void initialize_views() {
+    public void initializeViews() {
         cross = (ImageView) findViewById(R.id.cross);
-        et_destination = (AutoCompleteTextView) findViewById(R.id.et_destination);
-        tv_enter = (TextView) findViewById(R.id.tv_enter);
+        destinationTextView = (AutoCompleteTextView) findViewById(R.id.et_destination);
+        enterTextView = (TextView) findViewById(R.id.tv_enter);
         title = (TextView) findViewById(R.id.title);
 
         animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -122,9 +122,9 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
     }
 
     //set listener on views
-    public void set_listener() {
+    public void setListener() {
         cross.setOnClickListener(this);
-        tv_enter.setOnClickListener(this);
+        enterTextView.setOnClickListener(this);
     }
 
     @Override
@@ -144,12 +144,12 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
             case R.id.tv_enter:
                 //Hide keyboard
                 Utils.hideKeyboard(mContext,getCurrentFocus());
-                if(et_destination.getText().toString().length()<=0){
+                if(destinationTextView.getText().toString().length()<=0){
                     Utils.showToast(mContext,getString(R.string.enter_your_destination));
                 }else{
                     dialog.show();
                     //get latitude and longitude from selected location
-                    final String location = et_destination.getText().toString();
+                    final String location = destinationTextView.getText().toString();
                     new AsyncTask<String, String, String>() {
                         @Override
                         protected String doInBackground(String... params) {
@@ -182,14 +182,10 @@ public class SelectDestinationActivity extends AppCompatActivity implements View
                                 //save basic values inti local DB and enter into app
                                 tinyDB.putDouble(GeneralValues.USER_LAT_KEY,lat);
                                 tinyDB.putDouble(GeneralValues.USER_LONG_KEY,lng);
-                                tinyDB.putString(GeneralValues.USER_ID_KEY,UID);
+                                tinyDB.putString(GeneralValues.USER_ID_KEY, userID);
                                 tinyDB.putString(GeneralValues.USER_NAME_KEY,UNAME);
                                 tinyDB.putString(GeneralValues.USER_EMAIL_KEY,EMAIL);
-                                tinyDB.putString(GeneralValues.USER_DESTINATION_KEY,et_destination.getText().toString());
-                                /*tinyDB.putString(GeneralValues.HOTEL_SORT,"");
-                                tinyDB.putString(GeneralValues.RESTAURANT_SORT,"");
-                                tinyDB.putString(GeneralValues.PLACES_SORT,"");*/
-
+                                tinyDB.putString(GeneralValues.USER_DESTINATION_KEY, destinationTextView.getText().toString());
                                 tinyDB.putString(GeneralValues.RESTAURANT_FILTER,"");
                                 tinyDB.putString(GeneralValues.PLACES_FILTER,"");
                                 i=new Intent(mContext,HomeActivity.class);

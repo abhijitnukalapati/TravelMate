@@ -34,13 +34,13 @@ import retrofit2.Response;
 //SignUp activity
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ImageView cross;
-    EditText et_name,et_email,et_password;
-    TextView tv_signup,title;
-    Animation animationFadeIn;
-    Context mContext;
-    Dialog dialog;
-    ScrollView scrollview;
+    private ImageView cross;
+    private EditText nameEditText, emailEditText, passwordEditText;
+    private TextView signUpTextView, title;
+    private Animation animationFadeIn;
+    private Context mContext;
+    private Dialog dialog;
+    private ScrollView scrollview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +55,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         FontHelper.applyFont(this, findViewById(R.id.container_signup), "bauhaus.ttf");
 
         mContext=SignUpActivity.this;
-        dialog=Utils.get_progressDialog(mContext);
+        dialog=Utils.getProgressDialog(mContext);
 
-        initialize_views();
-        set_listener();
+        initializeViews();
+        setListener();
 
-        et_password.addTextChangedListener(new TextWatcher() {
+        passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -70,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_password.setText(str.trim());
+                    passwordEditText.setText(str.trim());
                 }
             }
 
@@ -80,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        et_name.addTextChangedListener(new TextWatcher() {
+        nameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_name.setText(str.trim());
+                    nameEditText.setText(str.trim());
                 }
             }
 
@@ -100,7 +100,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        et_email.addTextChangedListener(new TextWatcher() {
+        emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -110,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.length() > 0 && str.startsWith(" ")) {
-                    et_email.setText(str.trim());
+                    emailEditText.setText(str.trim());
                 }
             }
 
@@ -129,12 +129,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //initialize views
-    public void initialize_views(){
+    public void initializeViews(){
         cross=(ImageView)findViewById(R.id.cross);
-        et_name=(EditText)findViewById(R.id.et_name);
-        et_email=(EditText)findViewById(R.id.et_email);
-        et_password=(EditText)findViewById(R.id.et_password);
-        tv_signup=(TextView)findViewById(R.id.tv_signup);
+        nameEditText =(EditText)findViewById(R.id.name_edit_text);
+        emailEditText =(EditText)findViewById(R.id.email_edit_text);
+        passwordEditText =(EditText)findViewById(R.id.password_edit_text);
+        signUpTextView =(TextView)findViewById(R.id.signUp_button);
         title=(TextView)findViewById(R.id.title);
         scrollview=(ScrollView)findViewById(R.id.scrollview);
 
@@ -143,9 +143,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //set listener on views
-    public void set_listener(){
+    public void setListener(){
         cross.setOnClickListener(this);
-        tv_signup.setOnClickListener(this);
+        signUpTextView.setOnClickListener(this);
     }
 
     @Override
@@ -162,11 +162,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 SignUpActivity.this.finish();
                 overridePendingTransition(R.anim.toright_in, R.anim.toright_out);
                 break;
-            case R.id.tv_signup:
+            case R.id.signUp_button:
                 Utils.hideKeyboard(mContext,getCurrentFocus());
-                if(check_validation()){
+                if(checkValidation()){
                     if(Utils.isNetworkConnected(mContext)){
-                        api_user_signup();
+                        putUserSignUpDetails();
                     }else{
                         Utils.showToast(mContext,getString(R.string.no_internet_connection));
                     }
@@ -178,14 +178,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //validate all the fields
-    public boolean check_validation(){
-        if(et_name.getText().toString().length()<=0){
+    public boolean checkValidation(){
+        if(nameEditText.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_your_name));
             return false;
-        }else if(!(et_email.getText().toString().matches(GeneralValues.EMAIL_PATTERN))||et_email.getText().toString().length()<=0){
+        }else if(!(emailEditText.getText().toString().matches(GeneralValues.EMAIL_PATTERN))|| emailEditText.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_valid_email));
             return false;
-        }else if(et_password.getText().toString().length()<=0){
+        }else if(passwordEditText.getText().toString().length()<=0){
             Utils.showToast(mContext,getString(R.string.enter_your_password));
             return false;
         }else{
@@ -194,16 +194,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     //api to signup user
-    public void api_user_signup(){
+    public void putUserSignUpDetails(){
         try{
             dialog.show();
         }catch (Exception e){
 
         }
         HashMap<String,String> map=new HashMap<>();
-        map.put("password",""+et_password.getText().toString());
-        map.put("username",""+et_name.getText().toString());
-        map.put("email",""+et_email.getText().toString());
+        map.put("password",""+ passwordEditText.getText().toString());
+        map.put("username",""+ nameEditText.getText().toString());
+        map.put("email",""+ emailEditText.getText().toString());
         Call<ResponseBody> call = Utils.requestApi_Default().requestJson_withValues(GeneralValues.USER_SIGNUP, map);
 
         //Utils.show_log("url = "+call.request().url());

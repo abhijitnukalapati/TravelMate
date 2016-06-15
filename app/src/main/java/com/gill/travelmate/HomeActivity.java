@@ -30,12 +30,12 @@ import com.gill.travelmate.utils.Utils;
 //main activity after login
 public class    HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Context mContext;
-    TinyDB tinyDB;
-    Intent i;
+    public static Context mContext;
+    public static TinyDB tinyDB;
+    public static Intent i;
     public static Toolbar toolbar;
-    TextView title;
-    public static ImageView sort_icon,filter_icon;
+    public static TextView title;
+    public static ImageView sortIcon, filterIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,20 +70,23 @@ public class    HomeActivity extends AppCompatActivity implements NavigationView
         nav_email.setText(tinyDB.getString(GeneralValues.USER_EMAIL_KEY));
 
         title=(TextView)toolbar.findViewById(R.id.title);
-        filter_icon=(ImageView)toolbar.findViewById(R.id.filter_icon);
-        sort_icon=(ImageView)toolbar.findViewById(R.id.sort_icon);
+        filterIcon =(ImageView)toolbar.findViewById(R.id.filter_icon);
+        sortIcon =(ImageView)toolbar.findViewById(R.id.sort_icon);
 
-        initial_setting();
+        initialSetting();
     }
 
     //set initial settings and set initial fragment
-    public void initial_setting(){
-        Utils.show_log("Id = "+tinyDB.getString(GeneralValues.USER_ID_KEY)+" name = "+tinyDB.getString(GeneralValues.USER_NAME_KEY)+" des = "+tinyDB.getString(GeneralValues.USER_DESTINATION_KEY));
+    public void initialSetting(){
+        Utils.show_log("Id = "+tinyDB.getString(GeneralValues.USER_ID_KEY)+" name = "+
+                tinyDB.getString(GeneralValues.USER_NAME_KEY)+
+                " des = "+tinyDB.getString(GeneralValues.USER_DESTINATION_KEY));
+
         Utils.showToast(mContext,"Welcome "+tinyDB.getString(GeneralValues.USER_NAME_KEY).toUpperCase());
 
         title.setText(getString(R.string.home));
-        sort_icon.setVisibility(View.VISIBLE);
-        filter_icon.setVisibility(View.GONE);
+        sortIcon.setVisibility(View.VISIBLE);
+        filterIcon.setVisibility(View.GONE);
 
         tinyDB.putString(GeneralValues.RESTAURANT_FILTER,"");
         tinyDB.putString(GeneralValues.PLACES_FILTER,"");
@@ -128,14 +131,10 @@ public class    HomeActivity extends AppCompatActivity implements NavigationView
                     if (!(fragment instanceof MainFragment)){
                         Utils.goToFragment(mContext,new MainFragment(),R.id.home_container);
                         title.setText(getString(R.string.home));
-                        sort_icon.setVisibility(View.VISIBLE);
-                        filter_icon.setVisibility(View.GONE);
-                        /*tinyDB.putString(GeneralValues.HOTEL_SORT,"");
-                        tinyDB.putString(GeneralValues.RESTAURANT_SORT,"");
-                        tinyDB.putString(GeneralValues.PLACES_SORT,"");*/
+                        sortIcon.setVisibility(View.VISIBLE);
+                        filterIcon.setVisibility(View.GONE);
                         tinyDB.putString(GeneralValues.RESTAURANT_FILTER,"");
                         tinyDB.putString(GeneralValues.PLACES_FILTER,"");
-
                         tinyDB.putBoolean(GeneralValues.HOTEL_FRAGMENT,true);
                         tinyDB.putBoolean(GeneralValues.RESTAURANT_FRAGMENT,false);
                         tinyDB.putBoolean(GeneralValues.PLACES_FRAGMENT,false);
@@ -155,8 +154,8 @@ public class    HomeActivity extends AppCompatActivity implements NavigationView
                         Utils.goToFragment(mContext,new WeatherFragment(),R.id.home_container);
                         title.setText(getString(R.string.weather));
                     }
-                    sort_icon.setVisibility(View.GONE);
-                    filter_icon.setVisibility(View.GONE);
+                    sortIcon.setVisibility(View.GONE);
+                    filterIcon.setVisibility(View.GONE);
                     toolbar.getMenu().findItem(R.id.action_conversion).setVisible(true);
                 } else if (id == R.id.nav_saved) {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.home_container);
@@ -164,8 +163,8 @@ public class    HomeActivity extends AppCompatActivity implements NavigationView
                         Utils.goToFragment(mContext,new MySavesFragment(),R.id.home_container);
                         title.setText(getString(R.string.my_saves));
                     }
-                    sort_icon.setVisibility(View.GONE);
-                    filter_icon.setVisibility(View.GONE);
+                    sortIcon.setVisibility(View.GONE);
+                    filterIcon.setVisibility(View.GONE);
                     toolbar.getMenu().findItem(R.id.action_conversion).setVisible(false);
                 } else if (id == R.id.nav_logout) {
                     Utils.showDialog(mContext, getString(R.string.want_to_logout), "", getString(R.string.logout), new DialogInterface.OnClickListener() {

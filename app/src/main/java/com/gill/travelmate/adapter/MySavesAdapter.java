@@ -54,12 +54,12 @@ public class MySavesAdapter extends RecyclerView.Adapter<MySavesAdapter.ChatHold
 
     @Override
     public void onBindViewHolder(ChatHolder holder, int position) {
-        holder.tv_name.setText(list.get(position).getName());
+        holder.nameView.setText(list.get(position).getName());
         String reviews = list.get(position).getReviews()+ " "+mContext.getString(R.string.reviews_save);
-        holder.tv_reviews.setText(reviews);
-        holder.tv_categories.setText(list.get(position).getCategory());
+        holder.reviewsView.setText(reviews);
+        holder.categoriesView.setText(list.get(position).getCategory());
         holder.rating.setRating(Float.parseFloat(list.get(position).getRating()));
-        Glide.with(mContext).load(list.get(position).getImage()).placeholder(R.drawable.logo).error(R.drawable.no_image).into(holder.img_main);
+        Glide.with(mContext).load(list.get(position).getImage()).placeholder(R.drawable.logo).error(R.drawable.no_image).into(holder.mainImage);
 
     }
 
@@ -70,22 +70,22 @@ public class MySavesAdapter extends RecyclerView.Adapter<MySavesAdapter.ChatHold
 
     public class ChatHolder extends RecyclerView.ViewHolder{
 
-        TextView tv_name,tv_reviews,tv_categories;
-        ImageView img_main,img_rating;
+        TextView nameView, reviewsView,categoriesView;
+        ImageView mainImage, ratingImageView;
         RatingBar rating;
 
         public ChatHolder(View itemView) {
             super(itemView);
-            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
-            tv_reviews = (TextView) itemView.findViewById(R.id.tv_distance);
-            img_main = (ImageView) itemView.findViewById(R.id.img_main);
-            img_rating = (ImageView) itemView.findViewById(R.id.img_rating);
+            nameView = (TextView) itemView.findViewById(R.id.tv_name);
+            reviewsView = (TextView) itemView.findViewById(R.id.tv_distance);
+            mainImage = (ImageView) itemView.findViewById(R.id.img_main);
+            ratingImageView = (ImageView) itemView.findViewById(R.id.img_rating);
             rating = (RatingBar) itemView.findViewById(R.id.rating);
-            tv_categories = (TextView) itemView.findViewById(R.id.tv_categories);
+            categoriesView = (TextView) itemView.findViewById(R.id.tv_categories);
 
-            Utils.typeface_font(mContext,tv_name);
-            Utils.typeface_font(mContext,tv_reviews);
-            Utils.typeface_font(mContext,tv_categories);
+            Utils.typeface_font(mContext, nameView);
+            Utils.typeface_font(mContext, reviewsView);
+            Utils.typeface_font(mContext,categoriesView);
         }
     }
 }

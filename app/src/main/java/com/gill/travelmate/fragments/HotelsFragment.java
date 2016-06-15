@@ -64,8 +64,8 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
         mContext=getActivity();
         tinyDB=new TinyDB(mContext);
 
-        initialize_views(v);
-        set_listener();
+        initializeViews(v);
+        setListener();
 
         layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -73,7 +73,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
 
         //call default api according to internet availablilty
         if(Utils.isNetworkConnected(mContext)){
-            call_hotel_api("");
+            getHotelDetailsFromYelp("");
         }else{
             if(Utils.getHotelArr(tinyDB)==null||Utils.getHotelArr(tinyDB).size()<=0){
                 progress_bar.setVisibility(View.GONE);
@@ -93,7 +93,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
     }
 
     //initialize views
-    public void initialize_views(View v){
+    public void initializeViews(View v){
         progress_bar=(ProgressBar)v.findViewById(R.id.progress_bar);
         reload=(ImageView)v.findViewById(R.id.reload);
         tv_message=(TextView)v.findViewById(R.id.tv_message);
@@ -101,7 +101,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
     }
 
     //set listener on views
-    public void set_listener(){
+    public void setListener(){
         reload.setOnClickListener(this);
     }
 
@@ -111,7 +111,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.reload:
                 if(Utils.isNetworkConnected(mContext)){
-                    call_hotel_api("");
+                    getHotelDetailsFromYelp("");
                 }else{
                     progress_bar.setVisibility(View.GONE);
                     reload.setVisibility(View.VISIBLE);
@@ -125,7 +125,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
     }
 
     //call api to get hotel data from server
-    public void call_hotel_api(String sort){
+    public void getHotelDetailsFromYelp(String sort){
         reload.setVisibility(View.GONE);
         progress_bar.setVisibility(View.VISIBLE);
         tv_message.setVisibility(View.VISIBLE);
@@ -232,7 +232,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
     }
 
     //show hotel sort dialog
-    public void show_sort_dialog() {
+    public void showHotelsSortDialog() {
         final Dialog dialog = new Dialog(mContext,R.style.DialogSlideAnim);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_sort);
@@ -249,7 +249,7 @@ public class HotelsFragment extends Fragment implements View.OnClickListener{
                     ArrayList<HotelsArraylist> arr=new ArrayList<HotelsArraylist>();
                     adapter = new HotelsAdapter(mContext, arr);
                     recyclerView.setAdapter(adapter);
-                    call_hotel_api("2");
+                    getHotelDetailsFromYelp("2");
                     dialog.dismiss();
                 }else{
                     Utils.showToast(mContext,getString(R.string.no_internet_connection));
