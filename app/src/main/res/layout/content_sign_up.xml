@@ -81,7 +81,7 @@
                     android:layout_marginTop="@dimen/_10sdp">
 
                     <EditText
-                        android:id="@+id/et_name"
+                        android:id="@+id/name_edit_text"
                         android:layout_width="fill_parent"
                         android:layout_height="@dimen/_40sdp"
                         android:gravity="center_vertical"
@@ -100,7 +100,7 @@
                     android:layout_marginTop="@dimen/_10sdp">
 
                     <EditText
-                        android:id="@+id/et_email"
+                        android:id="@+id/email_edit_text"
                         android:layout_width="fill_parent"
                         android:layout_height="@dimen/_40sdp"
                         android:gravity="center_vertical"
@@ -119,7 +119,7 @@
                     android:layout_marginTop="@dimen/_10sdp">
 
                     <EditText
-                        android:id="@+id/et_password"
+                        android:id="@+id/password_edit_text"
                         android:layout_width="fill_parent"
                         android:layout_height="@dimen/_40sdp"
                         android:gravity="center_vertical"
@@ -133,7 +133,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/tv_signup"
+                    android:id="@+id/signUp_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_marginRight="@dimen/_5sdp"

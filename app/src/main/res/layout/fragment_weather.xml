@@ -8,7 +8,7 @@
     android:animateLayoutChanges="true">
 
     <ImageView
-        android:id="@+id/img_bg"
+        android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -73,7 +73,7 @@
             android:padding="@dimen/_5sdp">
 
             <TextView
-                android:id="@+id/tv_date"
+                android:id="@+id/date_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -95,14 +95,14 @@
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:id="@+id/img_weather"
+                        android:id="@+id/weather_icon"
                         android:layout_width="@dimen/_50sdp"
                         android:layout_height="@dimen/_50sdp"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
                         android:contentDescription="@string/image_according_to_the_weather_selected"/>
                     <TextView
-                        android:id="@+id/tv_weather"
+                        android:id="@+id/weather_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
@@ -119,7 +119,7 @@
                     android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/tv_temp"
+                        android:id="@+id/temperature_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -132,7 +132,7 @@
                         android:gravity="center_horizontal"
                         tools:ignore="UseCompoundDrawables">
                         <TextView
-                            android:id="@+id/tv_humidity"
+                            android:id="@+id/humidity_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"

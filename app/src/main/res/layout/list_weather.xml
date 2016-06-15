@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:background="@drawable/custom_weather_list_selector">
             <ImageView
-                android:id="@+id/img_weather"
+                android:id="@+id/weather_icon"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
                 android:scaleType="centerCrop"
@@ -48,7 +48,7 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16sdp"/>
                     <TextView
-                        android:id="@+id/tv_weather"
+                        android:id="@+id/weather_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/_15sdp"

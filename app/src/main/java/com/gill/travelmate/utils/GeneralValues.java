@@ -23,12 +23,12 @@ public class GeneralValues {
     public static final String MY_SAVES_ARR="my_saves_arr";
     public static final String WEATHER_ARR="weather_arr";
 
-    public static final String YELP_CUSTOMER_KEY="xVGAIFUbD2r9kjgHCUM7ww";
-    public static final String YELP_CUSTOMER_SECRET="EVjGuFiMaHIEeu5Ln94frqgCnkQ";
-    public static final String YELP_TOKEN="_lg0YkcnO7DZQ6oju2jV-21p-WUFgmYo";
-    public static final String YELP_TOKEN_SECRET="OdMtiyxepMY7V13beRcRfGYN6xQ";
+    public static final String YELP_CUSTOMER_KEY="";
+    public static final String YELP_CUSTOMER_SECRET="";
+    public static final String YELP_TOKEN="";
+    public static final String YELP_TOKEN_SECRET="";
 
-    public static final String WEATHERMAP_KEY="849048ff7b0516f9bf54069665d0e26f";
+    public static final String WEATHERMAP_KEY="";
 
     public static final String GOOGLE_SERVER_KEY="AIzaSyAM_WTIKVoVp2-DGddlNDPkhkZT6WoMC1Y";
     public static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place/autocomplete/json";

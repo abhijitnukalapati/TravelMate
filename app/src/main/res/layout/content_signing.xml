@@ -33,7 +33,7 @@
         android:textColor="@color/white" />
 
     <LinearLayout
-        android:id="@+id/ll_fb_signin"
+        android:id="@+id/fbSignIn_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:layout_above="@+id/bt_ll"
@@ -73,7 +73,7 @@
         android:layout_marginRight="@dimen/_15sdp">
 
         <TextView
-            android:id="@+id/tv_signup"
+            android:id="@+id/signUp_button"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:layout_weight="1"
@@ -87,7 +87,7 @@
             android:layout_marginEnd="@dimen/_5sdp"
             android:contentDescription="@string/create_an_account"/>
         <TextView
-            android:id="@+id/tv_signin"
+            android:id="@+id/signin_button"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:layout_weight="1"
